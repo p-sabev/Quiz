@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Quiz</title>
+    <meta name="description" content="Quiz">
+    <meta name="author" content="Petar & Hristo">
+    <link rel="stylesheet" type="text/css" href="/static/styles/style.css">
+    <link rel="stylesheet" type="text/css" href="/static/styles/reset.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <!--[if lt IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <video autoplay muted loop id="video">
+        <source src="/static/media/bg.mp4" type="video/mp4">
+    </video>
+
+    <section class="game" id="game">
+        <div id="gameBox" class="clearfix">
+            <button id="start" class="btn">Start</button>
+        </div>
+    </section>
+
+    <script src="/static/game.js"></script>
+</body>
+</html>

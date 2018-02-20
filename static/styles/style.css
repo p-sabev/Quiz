@@ -1,0 +1,108 @@
+:root {
+    --true: #46B29D;
+    --false: #F53855;
+    --main: #324D5C;
+    --second: #F0CA4D;
+    --third: #E37B40;
+    --text: rgba(0, 0, 0, 0.829);
+}
+* {
+    box-sizing: border-box;
+}
+.clearfix:after {
+    content:"";
+    display:block;
+    clear:both;
+}
+/* button css */
+button,
+button::after {
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+button {
+    background: none;
+    border: 3px solid white;
+    border-radius: 5px;
+    color: white;
+    display: block;
+    font-size: 1.6em;
+    font-weight: bold;
+    margin: 3em auto;
+    padding: 1em 4em;
+    position: relative;
+    text-transform: uppercase;
+}
+
+button::before,
+button::after {
+    background: white;
+    content: '';
+    position: absolute;
+    z-index: -1;
+}
+button:hover {
+    color: var(--second);
+}
+.btn-5 {
+    overflow: hidden;
+}
+.btn-5::after {
+    /*background-color: #f00;*/
+    height: 100%;
+    left: -35%;
+    top: 0;
+    transform: skew(50deg);
+    transition-duration: 0.6s;
+    transform-origin: top left;
+    width: 0;
+}
+.btn-5:hover:after {
+    height: 100%;
+    width: 135%;
+}
+/* Background video */
+#video {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%; 
+    min-height: 100%;
+}
+/* The game */
+.game {
+    width: 800px;
+    background: var(--main);
+    opacity: 0.9;
+    margin: 50px auto;
+    border-radius: 20px;
+}
+#gameBox {
+    min-height: 300px;
+    width: 80%;
+    margin: 100px auto;
+    padding: 35px 0;
+}
+.question {
+    width: 100%;
+    background: var(--third);
+    padding: 20px;
+    font-size: 30px;
+    margin: 0 0 25px 0;
+    border: 1px solid var(--text);
+    border-radius: 5px;
+    cursor: none;
+}
+#answer {
+    width: 50%;
+    float: left;
+    background: var(--second);
+    padding: 20px;
+    font-size: 20px;
+    border: 1px solid var(--text);
+    border-radius: 5px;
+    cursor: pointer;
+}
