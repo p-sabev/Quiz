@@ -1,6 +1,5 @@
 const socket = io();
 
-
 const questions = [
     {
         "question": "What is the name of Batman's butler?",
@@ -28,15 +27,30 @@ const questions = [
 const startButton = document.getElementById("start");
 const gameBox = document.getElementById("gameBox");
 const game = document.getElementById("game");
+const num = document.getElementById("num");
+let playerName = "";
 
 let current = 0,
     score = 0;
+
+function startGame(){
+    const nameInput = document.getElementById("name");
+    playerName = nameInput.value;
+    if(playerName !== ""){
+        nextQuestion();
+        socket.emit('new player', playerName);
+    }else{
+        alert("Please set name");
+    }
+    return;
+}
 
 function nextQuestion(){
     let answers = questions[current].wrong;
     answers.push(questions[current].correct);
     answers = shuffle(answers);
     gameBox.innerHTML = `<div class="question" id="question" onmousedown='return false;' onselectstart='return false;'>${questions[current].question}</div>` + generateAnswers(answers);
+    return;
 }
 
 function generateAnswers(answers){
@@ -47,7 +61,7 @@ function generateAnswers(answers){
     return tmp;
 }
 
-function shuffle(a) {
+function shuffle(a){
     for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [a[i], a[j]] = [a[j], a[i]];
@@ -69,14 +83,43 @@ function checkAnswer(word){
     if(current < questions.length){
         setTimeout(function(){nextQuestion();}, 500);
     }else {
-        alert(score);
+        console.log('game ends');
+        addScoreTable(score);
+        socket.emit('score', {"name": playerName, "score": score});
     }
+    return;
 }
 
-startButton.addEventListener("click", nextQuestion);
+function updateNumOfPlayers(data) {
+    num.innerHTML = data + 1;
+    //alert((data + 1) + " players");
+    return;
+}
 
-socket.emit('new player');
+function addScoreTable(points) {
+    gameBox.innerHTML = `
+        <h3>Results:</h3>
+        <ul id="resultsList"><li>You: ${points} points</li></ul>
+    `;
+    return;
+}
 
-setInterval(function() {
-  socket.emit('message', "hi");
-}, 1000 / 60);
+function addScore(data){
+    const list = document.getElementById("resultsList");
+    list.innerHTML += `<li>${data.name}: ${data.score} points</li>`;
+    return;
+}
+
+startButton.addEventListener("click", startGame);
+
+socket.on('login', function (data) {
+    updateNumOfPlayers(data);
+});
+
+socket.on('user left', function (data) {
+    updateNumOfPlayers(data);
+});
+
+socket.on('updateScore', function (data) {
+    addScore(data);
+});

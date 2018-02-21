@@ -17,11 +17,21 @@ server.listen(5000, function() {
   console.log('Serveer is working on port 5000');
 });
 
-let players = {};
+let players = 0;
+let names = [];
+let scores = [];
 
 io.on('connection', function(socket) {
-  socket.on('new player', function() {
-    console.log("new player");
+  socket.on('new player', function(name) {
+    console.log(name + " joined the game");
+    names.push(name);
+    players++;
+    socket.broadcast.emit('login', players);
+  });
+
+  socket.on('score', function(data) {
+    scores.push({"name": data.name, "score": data.score});
+    socket.broadcast.emit('updateScore', data);
   });
 });
 
