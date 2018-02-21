@@ -1,10 +1,10 @@
-var express = require('express');
-var http = require('http');
-var path = require('path');
-var socketIO = require('socket.io');
-var app = express();
-var server = http.Server(app);
-var io = socketIO(server);
+const express = require('express');
+const http = require('http');
+const path = require('path');
+const socketIO = require('socket.io');
+const app = express();
+const server = http.Server(app);
+const io = socketIO(server);
 
 app.set('port', 5000);
 app.use('/static', express.static(__dirname + '/static'));
@@ -17,10 +17,11 @@ server.listen(5000, function() {
   console.log('Serveer is working on port 5000');
 });
 
-var players = {};
+let players = {};
+
 io.on('connection', function(socket) {
   socket.on('new player', function() {
-    
+    console.log("new player");
   });
 });
 

@@ -75,7 +75,7 @@ function checkAnswer(word){
 
 startButton.addEventListener("click", nextQuestion);
 
-socket.emit('New player');
+socket.emit('new player');
 
 setInterval(function() {
   socket.emit('message', "hi");
