@@ -14,15 +14,22 @@
 </head>
 
 <body>
-
+    <p id="num"></p>
     <video autoplay muted loop id="video">
         <source src="/static/media/bg.mp4" type="video/mp4">
     </video>
-    <p id="num">0</p>
-    <section class="game" id="game">
+    
+    <section class="game clearfix" id="game">
+        <div id="resultBox">
+            <h3 class="results">Results:</h3>
+            <ul id="resultsList"></ul>
+        </div>
         <div id="gameBox" class="clearfix">
             <input type="text" name="username" id="name" title="Set your team name" placeholder="Set your team name">
             <button id="start" class="btn">Start</button>
+        </div>
+        <div id="pictureBox">
+
         </div>
     </section>
 

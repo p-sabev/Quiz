@@ -1,0 +1,127 @@
+[
+    {
+        "question": "What is the name of Batman's butler?",
+        "correct": "Alfred",
+        "wrong": [
+            "James",
+            "John",
+            "Tom"
+        ],
+        "img":"Q1"
+    },
+    {
+        "question": "Who is the founder of the social networking website Twitter? ",
+        "correct": "Jack Dorsey",
+        "wrong": [
+            "Mark Zuckerberg",
+            "Steve Jobs",
+            "Sergey Brin"
+        ],
+        "img":"Q2"
+    },
+    {
+        "question": "What`s the name of the younger son of England`s Prince Charles and Princess Diana?",
+        "correct": "Prince Harry",
+        "wrong": [
+            "Prince Charlston",
+            "Prince William",
+            "Prince Harold"
+        ],
+        "img":"Q3"
+    },
+    {
+        "question": "Which of these books is Stephen King`s book? ",
+        "correct": "The girl who loved Tom Gordon",
+        "wrong": [
+            "Frankenstein",
+            "Haunted",
+            "House of Leaves"
+        ],
+        "img":"Q4"
+    },
+    {
+        "question": "Which of these celebrities wasn`t in \"The Mickey Mouse Club\"?",
+        "correct": "Jessica Simpson",
+        "wrong": [
+            "Christina Aguilera",
+            "Justin Timberlake",
+            "Ryan Gosling"
+        ],
+        "img":"Q5"
+    },
+    {
+        "question": "Who is widely regarded as the greatest fashion designer who ever lived?",
+        "correct": "Coco Shanel",
+        "wrong": [
+            "Misia Sert",
+            "Anne Fontaine",
+            "Audrey Tautou"
+        ],
+        "img":"Q6"
+    },
+    {
+        "question": "What is the birthplace of Pamela Anderson",
+        "correct": "Canada",
+        "wrong": [
+            "America",
+            "Denmark",
+            "Australia"
+        ],
+        "img":"Q7"
+    },
+    {
+        "question": "How many Oscars did Leonardo DiCaprio win until 2015?",
+        "correct": "0",
+        "wrong": [
+            "1",
+            "2",
+            "3"
+        ],
+        "img":"Q8"
+    },
+    {
+        "question": "Who wrote the 1865 novel \"From the Earth to the Moon\"?",
+        "correct": "Jules Verne",
+        "wrong": [
+            "Garrett P. Serviss",
+            "Edwin Abbott",
+            "Roald Dahl"
+        ],
+        "img":"Q9"
+    },
+    {
+        "question": "What is Elton John's middle name?",
+        "correct": "Hercules",
+        "wrong": [
+            "Moses",
+            "Thor",
+            "Achilles"
+        ],
+        "img":"Q10"
+    },
+    {
+        "question": "Who is the originator of the theory of relativity? ___ ___",
+        "correct": "Albert Einstein",
+        "img":"Q11"
+    },
+    {
+        "question": "Compleate this line from a Carly Rae Jepsen song: \"Hey I just met you. And this is _____\"?",
+        "correct": "Crazy",
+        "img":"Q12"
+    },
+    {
+        "question": "Who was the last representative Eurovision? ___ ___",
+        "correct": "Kristian Kostov",
+        "img":"Q13"
+    },
+    {
+        "question": "Who is the current president of Bulgaria? ___ ___",
+        "correct": "Rumen Radev",
+        "img":"Q14"
+    },
+    {
+        "question": "You know about the Mona Lisa's smile, but you may not have noticed that she is missing something. What? ___",
+        "correct": "Eyebrows",
+        "img":"Q15"
+    }
+]

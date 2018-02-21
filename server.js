@@ -14,7 +14,7 @@ app.get('/', function(request, response) {
 });
 
 server.listen(5000, function() {
-  console.log('Serveer is working on port 5000');
+  console.log('Server is working on port 5000');
 });
 
 let players = 0;
@@ -25,16 +25,17 @@ io.on('connection', function(socket) {
   socket.on('new player', function(name) {
     console.log(name + " joined the game");
     names.push(name);
+    scores.push(0);
     players++;
     socket.broadcast.emit('login', players);
   });
 
-  socket.on('score', function(data) {
-    scores.push({"name": data.name, "score": data.score});
-    socket.broadcast.emit('updateScore', data);
+  socket.on('score', function(player, score) {
+    scores[names.indexOf(player)] = score;
+    //socket.broadcast.emit('updateScore', scores);
   });
 });
 
 setInterval(function() {
-  io.sockets.emit('state', players);
-}, 1000 / 60);
+  io.sockets.emit('scoreUpdate', scores, names);
+}, 1000);

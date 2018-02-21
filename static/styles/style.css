@@ -74,19 +74,37 @@ button:hover {
 }
 /* The game */
 .game {
-    width: 800px;
+    width: 80%;
     background: var(--main);
     opacity: 0.9;
     margin: 50px auto;
     border-radius: 20px;
 }
 #gameBox {
+    float: left;
     min-height: 300px;
-    width: 80%;
+    width: 60%;
+    margin: 100px auto;
+    padding: 35px 0;
+}
+#resultBox {
+    text-align: center;
+    float: left;
+    min-height: 300px;
+    width: 20%;
+    margin: 100px auto;
+    padding: 35px 0;
+    color: white;
+}
+#pictureBox {
+    float: left;
+    min-height: 300px;
+    width: 20%;
     margin: 100px auto;
     padding: 35px 0;
 }
 .question {
+    transition: all 0.5s ease;
     width: 100%;
     background: var(--third);
     padding: 20px;
@@ -95,8 +113,20 @@ button:hover {
     border: 1px solid var(--text);
     border-radius: 5px;
     cursor: none;
+    float: left;
+}
+.image{
+    transition: all 0.5s ease;
+    width: 100%;
+}
+.image:hover{
+    transform: scale(1.9);
+}
+.results{
+    padding: 20px 0;
 }
 #answer {
+    transition: all 0.5s ease;
     width: 50%;
     float: left;
     background: var(--second);
@@ -105,6 +135,10 @@ button:hover {
     border: 1px solid var(--text);
     border-radius: 5px;
     cursor: pointer;
+}
+#answer:hover{
+    background: var(--third);
+    transform: scale(1.2);
 }
 #name {
     border: 3px solid white;
@@ -117,4 +151,33 @@ button:hover {
     padding: 1em 4em;
     position: relative;
     text-transform: uppercase;
+}
+#resultsList li {
+    padding: 5px 0;
+}
+#answerBox {
+    width: 50%;
+    float: left;
+    background: white;
+    padding: 30px;
+    font-size: 20px;
+    border: 1px solid var(--text);
+    border-radius: 5px;
+    cursor: pointer;
+}
+.over {
+    text-align: center;
+    font-size: 50px;
+    font-weight: bold;
+    color: white;
+}
+#num {
+    font-size: 45px;
+    color: white;
+    position: fixed;
+    top: 5px;
+    left: 0;
+    right: 0;
+    z-index: 10007;
+    text-align: center;
 }

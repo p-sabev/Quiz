@@ -1,44 +1,27 @@
 const socket = io();
-
-const questions = [
-    {
-        "question": "What is the name of Batman's butler?",
-        "correct": "Alfred",
-        "wrong": ["James", "John", "Tom"]
-    },{
-        "question": "Who is the founder of the social networking website Twitter? ",
-        "correct": "Jack Dorsey",
-        "wrong": ["Mark Zuckerberg", "Steve Jobs", "Sergey Brin"]
-    },{
-        "question": "What`s the name of the younger son of England`s Prince Charles and Princess Diana?",
-        "correct": "Prince Harry",
-        "wrong": ["Prince Charlston","Prince William","Prince Harold"]
-    },{
-        "question": "Which of these books is Stephen King`s book? ",
-        "correct": "The girl who loved Tom Gordon",
-        "wrong": ["Frankenstein","Haunted","House of Leaves"]
-    },{
-        "question": "Which of these celebrities wasn`t in 'The Mickey Mouse Club'?",
-        "correct": "Jessica Simpson",
-        "wrong": ["Christina Aguilera", "Justin Timberlake", "Ryan Gosling"]
-    }
-];
-
 const startButton = document.getElementById("start");
 const gameBox = document.getElementById("gameBox");
+const pictureBox = document.getElementById("pictureBox");
 const game = document.getElementById("game");
 const num = document.getElementById("num");
-let playerName = "";
+const resultsList = document.getElementById("resultsList");
+let playerName = "",
+    current = 0,
+    score = 0,
+    secs = 20,
+    interval,
+    questions;
 
-let current = 0,
-    score = 0;
+fetch("/static/questions.json")
+  .then(response => response.json())
+  .then(json => questions = json);
 
 function startGame(){
     const nameInput = document.getElementById("name");
     playerName = nameInput.value;
     if(playerName !== ""){
-        nextQuestion();
         socket.emit('new player', playerName);
+        nextQuestion();
     }else{
         alert("Please set name");
     }
@@ -50,9 +33,40 @@ function nextQuestion(){
     answers.push(questions[current].correct);
     answers = shuffle(answers);
     gameBox.innerHTML = `<div class="question" id="question" onmousedown='return false;' onselectstart='return false;'>${questions[current].question}</div>` + generateAnswers(answers);
+    pictureBox.innerHTML = `<img src="/static/media/${questions[current].img}.jpg" class="image">`;
+    window.myInterval = setInterval(function(){ 
+        secs--;
+        if(secs === 0){
+            checkAnswer("sdadasd");
+            secs = 20;
+            num.innerHTML = "";
+            clearInterval(interval);
+        }
+        num.innerHTML = secs;
+    }, 1000);
     return;
 }
 
+function nextOpenQuestion(){
+    gameBox.innerHTML = `<div class="question" id="question" onmousedown='return false;' onselectstart='return false;'>${questions[current].question}</div>
+    <input type="text" name="answer" id="answerBox"><button type="button" onclick="checkOpenAnswer()">Check</button>`;
+    pictureBox.innerHTML = `<img src="/static/media/${questions[current].img}.jpg" class="image">`;
+    window.myInterval = setInterval(function(){ 
+        secs--;
+        if(secs === 0){
+            checkAnswer("sdadasd");
+            secs = 20;
+            num.innerHTML = "";
+            clearInterval(interval);
+        }
+        num.innerHTML = secs;
+    }, 1000);
+    return;
+}
+
+function checkOpenAnswer(){
+    checkAnswer(document.getElementById("answerBox").value);
+}
 function generateAnswers(answers){
     let tmp = "";
     for(let i = 0; i <= 3; i++){
@@ -70,56 +84,68 @@ function shuffle(a){
 }
 
 function checkAnswer(word){
-    if(word === questions[current].correct){
-        game.style.background = "#46B29D";
-        setTimeout(function(){game.style.background = "#324D5C";}, 500);
-        score += 3;
+    window.clearInterval(window.myInterval);
+    secs = 20;
+    if(current < 10){
+        if(word === questions[current].correct){
+            game.style.background = "#46B29D";
+            setTimeout(function(){game.style.background = "#324D5C";}, 500);
+            score += 3;
+        }else{
+            game.style.background = "#F53855";
+            setTimeout(function(){game.style.background = "#324D5C";}, 500);
+            score -= 1;
+        }
     }else{
-        game.style.background = "#F53855";
-        setTimeout(function(){game.style.background = "#324D5C";}, 500);
-        score -= 1;
+        if(checkString(word, questions[current].correct)){
+            game.style.background = "#46B29D";
+            setTimeout(function(){game.style.background = "#324D5C";}, 500);
+            score += 3;
+        }else{
+            game.style.background = "#F53855";
+            setTimeout(function(){game.style.background = "#324D5C";}, 500);
+            score -= 1;
+        }
     }
+
+    socket.emit('score', playerName, score);
     current++;
-    if(current < questions.length){
+
+    if(current < 10){
         setTimeout(function(){nextQuestion();}, 500);
+    }else if(current < 15){
+        setTimeout(function(){nextOpenQuestion();}, 500);
     }else {
-        console.log('game ends');
-        addScoreTable(score);
-        socket.emit('score', {"name": playerName, "score": score});
+        pictureBox.innerHTML = "";
+        gameBox.innerHTML = `<h2 class="over">Game over</h2>`;
     }
     return;
 }
 
-function updateNumOfPlayers(data) {
-    num.innerHTML = data + 1;
-    //alert((data + 1) + " players");
+function checkString(text, check) {
+    return text.toLowerCase().includes(check.toLowerCase());
+}
+
+function updateScores(players, scores){
+    let list = "";
+    for(let i = 0 ; i <= players.length; i++){
+        if(players[i]){
+            list += `<li>${players[i] || ""}: ${scores[i] || "0"} points</li>`;
+        }
+    }
+    resultsList.innerHTML = list;
     return;
 }
 
-function addScoreTable(points) {
-    gameBox.innerHTML = `
-        <h3>Results:</h3>
-        <ul id="resultsList"><li>You: ${points} points</li></ul>
-    `;
-    return;
-}
-
-function addScore(data){
-    const list = document.getElementById("resultsList");
-    list.innerHTML += `<li>${data.name}: ${data.score} points</li>`;
-    return;
-}
-
-startButton.addEventListener("click", startGame);
 
 socket.on('login', function (data) {
-    updateNumOfPlayers(data);
+    //console.log(data);
+    //updateNumOfPlayers(data);
 });
 
-socket.on('user left', function (data) {
-    updateNumOfPlayers(data);
+socket.on('scoreUpdate', function (scores, players) {
+    updateScores(players, scores);
 });
 
-socket.on('updateScore', function (data) {
-    addScore(data);
-});
+
+startButton.addEventListener("click", startGame);
