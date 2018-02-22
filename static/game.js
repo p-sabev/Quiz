@@ -32,8 +32,8 @@ function nextQuestion(){
     let answers = questions[current].wrong;
     answers.push(questions[current].correct);
     answers = shuffle(answers);
-    gameBox.innerHTML = `<div class="question" id="question" onmousedown='return false;' onselectstart='return false;'>${questions[current].question}</div>` + generateAnswers(answers);
-    pictureBox.innerHTML = `<img src="/static/media/${questions[current].img}.jpg" class="image">`;
+    gameBox.innerHTML = `<div class="question" id="question" onmousedown='return false;' onselectstart='return false;'>${questions[current].question}</div>` + generateAnswers(answers) +
+    `<img src="/static/media/${questions[current].img}.jpg" class="image">`;
     window.myInterval = setInterval(function(){ 
         secs--;
         if(secs === 0){
@@ -49,8 +49,8 @@ function nextQuestion(){
 
 function nextOpenQuestion(){
     gameBox.innerHTML = `<div class="question" id="question" onmousedown='return false;' onselectstart='return false;'>${questions[current].question}</div>
-    <input type="text" name="answer" id="answerBox"><button type="button" onclick="checkOpenAnswer()">Check</button>`;
-    pictureBox.innerHTML = `<img src="/static/media/${questions[current].img}.jpg" class="image">`;
+    <input type="text" name="answer" id="answerBox"><button type="button" onclick="checkOpenAnswer()">Check</button>
+    <img src="/static/media/${questions[current].img}.jpg" class="image">`;
     window.myInterval = setInterval(function(){ 
         secs--;
         if(secs === 0){
@@ -116,8 +116,8 @@ function checkAnswer(word){
     }else if(current < 15){
         setTimeout(function(){nextOpenQuestion();}, 500);
     }else {
-        pictureBox.innerHTML = "";
         gameBox.innerHTML = `<h2 class="over">Game over</h2>`;
+        num.innerHTML = "";
     }
     return;
 }
