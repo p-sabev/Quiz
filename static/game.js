@@ -22,7 +22,6 @@ function logIn(){
 
     if(checkName(playerName)){
         if(allPlayers.indexOf(playerName) === -1){
-            console.log(allPlayers);
             socket.emit('new player', playerName);
             sessionStorage.setItem("username", playerName);
             gameBox.innerHTML = `<button id="start" class="btn" onclick="startGame()">Start</button>`;
@@ -41,6 +40,7 @@ function checkName(name){
 }
 
 function startGame(){
+    score = 0;
     nextQuestion();
     return;
 }
@@ -49,8 +49,7 @@ function nextQuestion(){
     let answers = questions[current].wrong;
     answers.push(questions[current].correct);
     answers = shuffle(answers);
-    gameBox.innerHTML = `<div class="question" id="question" onmousedown='return false;' onselectstart='return false;'>${questions[current].question}</div>` + generateAnswers(answers) +
-    `<img src="/static/media/${questions[current].img}.jpg" class="image">`;
+    gameBox.innerHTML = `<div class="question" id="question" onmousedown='return false;' onselectstart='return false;'>${questions[current].question}</div>` + generateAnswers(answers) + `<img src="/static/media/${questions[current].img}.jpg" class="image">`;
     window.myInterval = setInterval(function(){ 
         secs--;
         if(secs === 0){
@@ -65,9 +64,7 @@ function nextQuestion(){
 }
 
 function nextOpenQuestion(){
-    gameBox.innerHTML = `<div class="question" id="question" onmousedown='return false;' onselectstart='return false;'>${questions[current].question}</div>
-    <input type="text" name="answer" id="answerBox"><button type="button" onclick="checkOpenAnswer()">Check</button>
-    <img src="/static/media/${questions[current].img}.jpg" class="image">`;
+    gameBox.innerHTML = `<div class="question" id="question" onmousedown='return false;' onselectstart='return false;'>${questions[current].question}</div><input type="text" name="answer" id="answerBox"><button type="button" onclick="checkOpenAnswer()">Check</button><img src="/static/media/${questions[current].img}.jpg" class="image">`;
     window.myInterval = setInterval(function(){ 
         secs--;
         if(secs === 0){
@@ -140,12 +137,14 @@ function continueGame(){
 }
 
 function trueAnswer(){
+    num.innerHTML = "";
     game.style.background = "#46B29D";
     setTimeout(function(){game.style.background = "#324D5C";}, 500);
     score += 3;
 }
 
 function wrongAnswer(){
+    num.innerHTML = "";
     game.style.background = "#F53855";
     setTimeout(function(){game.style.background = "#324D5C";}, 500);
     score -= 1;
@@ -209,13 +208,13 @@ socket.on('playersUpdate', function (players){
 loginButton.addEventListener("click", logIn);
 
 window.onload = function() {
-    
     socket.emit('getPlayers');
     let item = sessionStorage.getItem("username");
     if(item && item !== ""){
         playerName = sessionStorage.getItem("username");
-        console.log(playerName);
-        socket.emit('new player', playerName);
+        if(allPlayers.indexOf(playerName) === -1){
+            socket.emit('new player', playerName);
+        }
         gameBox.innerHTML = `<button id="start" class="btn" onclick="startGame()">Start</button>`;
     }
     return;

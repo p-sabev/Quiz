@@ -22,10 +22,16 @@ let scores = [];
 
 io.on('connection', function(socket) {
     socket.on('new player', function(name) {
-      console.log(name + " joined the game");
-      names.push(name);
-      scores.push(0);
-      //socket.broadcast.emit('login', players);
+        if(names.indexOf(name) === -1){
+            console.log(name + " joined the game");
+            names.push(name);
+            scores.push(0);
+            io.sockets.emit('playersUpdate', names);
+        }
+    });
+    
+    socket.on('getPlayers', function(){
+        io.sockets.emit('playersUpdate', names);
     });
 
     socket.on('score', function(player, score) {
