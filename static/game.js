@@ -1,5 +1,5 @@
 const socket = io();
-const startButton = document.getElementById("start");
+const loginButton = document.getElementById("start");
 const gameBox = document.getElementById("gameBox");
 const pictureBox = document.getElementById("pictureBox");
 const game = document.getElementById("game");
@@ -10,21 +10,37 @@ let playerName = "",
     score = 0,
     secs = 20,
     interval,
-    questions;
+    questions,
+    allPlayers;
 
 fetch("/static/questions.json")
   .then(response => response.json())
   .then(json => questions = json);
 
-function startGame(){
-    const nameInput = document.getElementById("name");
-    playerName = nameInput.value;
-    if(playerName !== ""){
-        socket.emit('new player', playerName);
-        nextQuestion();
+function logIn(){
+    playerName = document.getElementById("name").value;
+
+    if(checkName(playerName)){
+        if(allPlayers.indexOf(playerName) === -1){
+            socket.emit('new player', playerName);
+            sessionStorage.setItem("username", playerName);
+            gameBox.innerHTML = `<button id="start" class="btn" onclick="startGame()">Start</button>`;
+        }else{
+            alert("This user already exists, please choose other name.");
+        }
     }else{
-        alert("Please set name");
+        alert("Please set correct name");
     }
+    return;
+}
+
+function checkName(name){
+    const regExp = /^[a-zA-Z0-9]+$/;
+    return regExp.test(name);
+}
+
+function startGame(){
+    nextQuestion();
     return;
 }
 
@@ -64,17 +80,6 @@ function nextOpenQuestion(){
     return;
 }
 
-function checkOpenAnswer(){
-    checkAnswer(document.getElementById("answerBox").value);
-}
-function generateAnswers(answers){
-    let tmp = "";
-    for(let i = 0; i <= 3; i++){
-        tmp += `<div id="answer" onclick="checkAnswer('${answers[i]}');">${answers[i]}</div>`;
-    }
-    return tmp;
-}
-
 function shuffle(a){
     for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -83,50 +88,81 @@ function shuffle(a){
     return a;
 }
 
+function checkOpenAnswer(){
+    checkAnswer(document.getElementById("answerBox").value);
+}
+
 function checkAnswer(word){
     window.clearInterval(window.myInterval);
     secs = 20;
-    if(current < 10){
-        if(word === questions[current].correct){
-            game.style.background = "#46B29D";
-            setTimeout(function(){game.style.background = "#324D5C";}, 500);
-            score += 3;
-        }else{
-            game.style.background = "#F53855";
-            setTimeout(function(){game.style.background = "#324D5C";}, 500);
-            score -= 1;
-        }
+
+    let wrong = questions[current].wrong;
+    if(wrong && wrong.length === 3){
+        checkClosedQuestion();
     }else{
-        if(checkString(word, questions[current].correct)){
-            game.style.background = "#46B29D";
-            setTimeout(function(){game.style.background = "#324D5C";}, 500);
-            score += 3;
-        }else{
-            game.style.background = "#F53855";
-            setTimeout(function(){game.style.background = "#324D5C";}, 500);
-            score -= 1;
-        }
+        checkOpenQuestion(word);
     }
 
     socket.emit('score', playerName, score);
     current++;
+    
+    continueGame();
+    return;
+}
 
+function checkClosedQuestion(){
+    if(word === questions[current].correct){
+        return trueAnswer();
+    }else{
+        return wrongAnswer();
+    }
+}
+
+function checkOpenQuestion(word){
+    if(checkString(word, questions[current].correct)){
+        return trueAnswer();
+    }else{
+        return wrongAnswer();
+    }
+}
+
+function continueGame(){
     if(current < 10){
         setTimeout(function(){nextQuestion();}, 500);
     }else if(current < 15){
         setTimeout(function(){nextOpenQuestion();}, 500);
     }else {
-        gameBox.innerHTML = `<h2 class="over">Game over</h2>`;
+        gameBox.innerHTML = `<h2 class="over">Game over</br>You have: ${score}points :)</h2>`;
         num.innerHTML = "";
     }
     return;
+}
+
+function trueAnswer(){
+    game.style.background = "#46B29D";
+    setTimeout(function(){game.style.background = "#324D5C";}, 500);
+    score += 3;
+}
+
+function wrongAnswer(){
+    game.style.background = "#F53855";
+    setTimeout(function(){game.style.background = "#324D5C";}, 500);
+    score -= 1;
+}
+
+function generateAnswers(answers){
+    let tmp = "";
+    for(let i = 0; i <= 3; i++){
+        tmp += `<div id="answer" onclick="checkAnswer('${answers[i]}');">${answers[i]}</div>`;
+    }
+    return tmp;
 }
 
 function checkString(text, check) {
     return text.toLowerCase().includes(check.toLowerCase());
 }
 
-function updateScores(players, scores){
+function updateScores(scores, players){
     let list = "";
     for(let i = 0 ; i <= players.length; i++){
         if(players[i]){
@@ -137,15 +173,43 @@ function updateScores(players, scores){
     return;
 }
 
+//First array should be that with scores
+function sortArraysByFirstArray(arr1, arr2){
+    let len = arr1.length;
+    for (let i = len-1; i>=0; i--){
+        for(let j = 1; j<=i; j++){
+            if(arr1[j-1] < arr1[j]){
+                swap(arr1, j-1, j);
+                swap(arr2, j-1, j);
+            }
+        }
+    }
+    return [arr1, arr2];
+}
 
-socket.on('login', function (data) {
-    //console.log(data);
-    //updateNumOfPlayers(data);
-});
+function swap(arr, i, j){
+    var temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+}
+
 
 socket.on('scoreUpdate', function (scores, players) {
-    updateScores(players, scores);
+    let tmp = sortArraysByFirstArray(scores, players);
+    scores = tmp[0];
+    players = tmp[1];
+    updateScores(scores, players);
 });
 
+loginButton.addEventListener("click", logIn);
 
-startButton.addEventListener("click", startGame);
+window.onload = function() {
+    let item = sessionStorage.getItem("username");
+    if(item && item !== ""){
+        playerName = sessionStorage.getItem("username");
+        console.log(playerName);
+        socket.emit('new player', playerName);
+        gameBox.innerHTML = `<button id="start" class="btn" onclick="startGame()">Start</button>`;
+    }
+    return;
+};

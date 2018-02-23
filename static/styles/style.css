@@ -123,7 +123,9 @@ button:hover {
     padding: 25px;
 }
 .results{
-    padding: 20px 0;
+    padding: 10px 0;
+    font-size: 20px;
+    font-weight: bold;
 }
 #answer {
     transition: all 0.5s ease;
@@ -166,6 +168,7 @@ button:hover {
     cursor: pointer;
 }
 .over {
+    padding: 50px 0;
     text-align: center;
     font-size: 50px;
     font-weight: bold;
