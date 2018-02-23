@@ -11,7 +11,7 @@ let playerName = "",
     secs = 20,
     interval,
     questions,
-    allPlayers;
+    allPlayers = [];
 
 fetch("/static/questions.json")
   .then(response => response.json())
@@ -22,6 +22,7 @@ function logIn(){
 
     if(checkName(playerName)){
         if(allPlayers.indexOf(playerName) === -1){
+            console.log(allPlayers);
             socket.emit('new player', playerName);
             sessionStorage.setItem("username", playerName);
             gameBox.innerHTML = `<button id="start" class="btn" onclick="startGame()">Start</button>`;
@@ -201,9 +202,15 @@ socket.on('scoreUpdate', function (scores, players) {
     updateScores(scores, players);
 });
 
+socket.on('playersUpdate', function (players){
+    allPlayers = players;
+});
+
 loginButton.addEventListener("click", logIn);
 
 window.onload = function() {
+    
+    socket.emit('getPlayers');
     let item = sessionStorage.getItem("username");
     if(item && item !== ""){
         playerName = sessionStorage.getItem("username");
